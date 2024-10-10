@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myproject/screens/timedate.dart';
+import 'package:myproject/screens/section.dart'; // เพิ่มการนำเข้าหน้า Section
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -11,13 +11,8 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  bool _isChecked1 = false;
-  bool _isChecked2 = false;
-  bool _isChecked3 = false;
-  bool _isChecked4 = false;
-  bool _isChecked5 = false;
-
   int _selectedIndex = 0; // ตัวแปรสำหรับเก็บสถานะการเลือกแท็บ
+  final String _bookingQueue = "ไม่มีการจองในขณะนี้"; // ช่องแสดงคิวการจอง
 
   // ฟังก์ชันสำหรับเปลี่ยนแท็บ
   void _onItemTapped(int index) {
@@ -26,9 +21,6 @@ class _MenuState extends State<Menu> {
     });
 
     switch (index) {
-      case 0:
-        // หน้าหลัก
-        break;
       case 1:
         // หน้าแก้ไขโปรไฟล์
         Navigator.of(context).pushNamed('/profilepage');
@@ -40,118 +32,45 @@ class _MenuState extends State<Menu> {
     }
   }
 
+  // ฟังก์ชันสำหรับแสดงหน้าป็อบอัพ
+  void _showBookingDialog() {
+    // นำทางไปยังหน้า Section เมื่อกดปุ่ม "เพิ่มการจอง"
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const Section()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Laundry'),
+        title: const Text('Laund'),
+        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
         automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-              // ignore: use_build_context_synchronously
-              Navigator.of(context).pushReplacementNamed('/auth');
             },
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CheckboxListTile(
-                  title: const Text('ซักผ้าและอบผ้า'),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  value: _isChecked1,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked1 = value ?? false;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.black,
-                ),
-                CheckboxListTile(
-                  title: const Text('ซักผ้าม่าน'),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  value: _isChecked2,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked2 = value ?? false;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.black,
-                ),
-                CheckboxListTile(
-                  title: const Text('ซักพรม'),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  value: _isChecked3,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked3 = value ?? false;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.black,
-                ),
-                CheckboxListTile(
-                  title: const Text('ซักผ้าปูที่นอน'),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  value: _isChecked4,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked4 = value ?? false;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.black,
-                ),
-                CheckboxListTile(
-                  title: const Text('รีดผ้า'),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  value: _isChecked5,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked5 = value ?? false;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.black,
-                ),
-              ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _bookingQueue,
+              style: const TextStyle(fontSize: 24), // ขนาดข้อความ
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                // ตรวจสอบว่ามีการเลือกตัวเลือกใด ๆ หรือไม่
-                if (_isChecked1 || _isChecked2 || _isChecked3 || _isChecked4 || _isChecked5) {
-                  // นำทางไปยังหน้า Timedate เมื่อมีการเลือกตัวเลือก
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const Timedate()),
-                  );
-                } else {
-                  // แสดง Snackbar เมื่อยังไม่ได้เลือกตัวเลือกใด ๆ
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('กรุณาเลือกอย่างน้อยหนึ่งตัวเลือกก่อนดำเนินการต่อ!'),
-                    ),
-                  );
-                }
-              },
-              child: const Icon(Icons.add),
+            const SizedBox(height: 20), // ระยะห่างระหว่างข้อความกับปุ่ม
+            ElevatedButton(
+              onPressed: _showBookingDialog, // เมื่อกดปุ่มจะนำทางไปยังหน้า Section
+              child: const Text('เพิ่มการจอง'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -170,8 +89,7 @@ class _MenuState extends State<Menu> {
           ),
         ],
         currentIndex: _selectedIndex, // แท็บที่ถูกเลือก
-        selectedItemColor:
-            const Color.fromARGB(255, 94, 201, 112), // สีของแท็บที่ถูกเลือก
+        selectedItemColor: const Color.fromARGB(255, 94, 201, 112), // สีของแท็บที่ถูกเลือก
         onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
       ),
     );

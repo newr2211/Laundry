@@ -28,7 +28,7 @@ class _EditProfileState extends State<EditProfile> {
       case 1:
         Navigator.of(context).pushNamed('/profilepage'); // แก้ไขโปรไฟล์
         break;
-      case 2: 
+      case 2:
         Navigator.of(context).pushNamed('/bookinghistory'); // ประวัติการจองคิว
         break;
     }
@@ -37,17 +37,45 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = 'John Doe'; // เปลี่ยนเป็นชื่อผู้ใช้จริง
-    _emailController.text = 'johndoe@example.com'; // เปลี่ยนเป็นอีเมลจริง
-    _phoneController.text = '0123456789'; // เปลี่ยนเป็นเบอร์โทรจริง
+    // ดึงข้อมูลของผู้ใช้จาก Firebase
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      _nameController.text = user.displayName ?? ''; // ชื่อผู้ใช้
+      _emailController.text = user.email ?? ''; // อีเมล
+      _phoneController.text = ''; // คุณอาจต้องจัดการกับหมายเลขโทรศัพท์ใน Firebase Firestore หากต้องการ
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        // อัปเดตชื่อผู้ใช้
+        await user.updateProfile(displayName: _nameController.text);
+        // อัปเดตอีเมล
+        await user.updateEmail(_emailController.text);
+        // อัปเดตหมายเลขโทรศัพท์: คุณอาจต้องเก็บข้อมูลหมายเลขโทรศัพท์ใน Firestore แทน
+
+        // บันทึกการเปลี่ยนแปลง
+        await user.reload();
+        // ดึงข้อมูลผู้ใช้ใหม่
+        user = FirebaseAuth.instance.currentUser;
+      } catch (error) {
+        // จัดการข้อผิดพลาดที่เกิดขึ้น
+        print('Error updating profile: $error');
+        // แสดงข้อความแสดงข้อผิดพลาด (เช่น ใน SnackBar)
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
-        automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
+        title: const Text('แก้ไขโปรไฟล์'),
+        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -112,8 +140,9 @@ class _EditProfileState extends State<EditProfile> {
                                 child: const Text('Cancel'),
                               ),
                               TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   Navigator.of(context).pop();
+                                  await _updateProfile(); // อัปเดตโปรไฟล์ใน Firebase
                                   Navigator.of(context).pop(); // กลับไปยังหน้าโปรไฟล์
                                 },
                                 child: const Text('Yes, Save'),

@@ -12,6 +12,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 1; // ตั้งค่าแท็บเริ่มต้นเป็นหน้าโปรไฟล์ (index 1)
 
+  // ดึงข้อมูลผู้ใช้จาก Firebase Authentication
+  final User? user = FirebaseAuth.instance.currentUser;
+
   // ฟังก์ชันสำหรับเปลี่ยนแท็บ
   void _onItemTapped(int index) {
     setState(() {
@@ -34,8 +37,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.teal,
+        title: const Text('Laundry'),
+        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
         automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: Center(
@@ -50,19 +53,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundImage: AssetImage('assets/profile_image.jpg'),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'ชื่อผู้ใช้งาน',
-                style: TextStyle(
+
+              // แสดงชื่อผู้ใช้และอีเมลจาก Firebase Authentication
+              Text(
+                user?.displayName ?? 'ไม่ทราบชื่อผู้ใช้งาน', // ถ้าไม่มีชื่อจะแสดงข้อความ 'ไม่ทราบชื่อผู้ใช้งาน'
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
+
+              // แสดงอีเมลจาก Firebase
               Text(
-                'อีเมล: example@example.com\nเบอร์โทร: 081-234-5678',
-                style: TextStyle(
+                'อีเมล: ${user?.email ?? 'ไม่ทราบอีเมล'}', // ถ้าไม่มีอีเมลจะแสดงข้อความ 'ไม่ทราบอีเมล'
+                style: const TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[700],
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -72,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.of(context).pushNamed('/edit_profile'); // นำทางไปยังหน้าแก้ไขโปรไฟล์
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 ),
                 child: const Text('แก้ไขโปรไฟล์'),
               ),

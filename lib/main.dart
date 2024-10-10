@@ -6,6 +6,7 @@ import 'package:myproject/screens/bookinghistory.dart';
 import 'package:myproject/screens/menu.dart';
 import 'package:myproject/screens/edit_profile.dart';
 import 'package:myproject/screens/profilepage.dart';
+import 'package:myproject/screens/section.dart';
 import 'package:myproject/screens/splash.dart';
 import 'package:myproject/screens/auth.dart';
 import 'package:myproject/screens/timedate.dart';
@@ -36,11 +37,12 @@ class MyApp extends StatelessWidget {
       // กำหนดเส้นทาง (routes)
       routes: {
         '/auth': (context) => const AuthScreen(),
-        '/menu': (context) => Menu(),
+        '/menu': (context) => const Menu(),
         '/timedate': (context) => const Timedate(),
         '/profilepage' : (context) => const ProfilePage(),
         '/edit_profile': (context) => const EditProfile(),
         '/bookinghistory': (context) => const BookingHistory(),
+        '/section': (context) => const Section(),
         
       },
       home: StreamBuilder<User?>(
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
           }
 
           if (snapshot.hasData && snapshot.data != null) {
-            return Menu(); // แสดงหน้า Coco เมื่อเข้าสู่ระบบสำเร็จ
+            return const Menu(); // แสดงหน้า Coco เมื่อเข้าสู่ระบบสำเร็จ
           }
 
           return const AuthScreen();

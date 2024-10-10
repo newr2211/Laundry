@@ -59,8 +59,9 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('เวลา'),
-        automaticallyImplyLeading: false,
+        title: const Text('เลือกเวลาการจองคิวใช้บริการ'),
+        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: Center(
         child: Padding(

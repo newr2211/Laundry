@@ -42,7 +42,8 @@ class _BookingHistoryState extends State<BookingHistory> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ประวัติการจองคิว'),
-        automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
+        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: ListView.builder(
         itemCount: bookings.length,
