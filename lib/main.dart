@@ -10,7 +10,7 @@ import 'package:myproject/screens/section.dart';
 import 'package:myproject/screens/splash.dart';
 import 'package:myproject/screens/auth.dart';
 import 'package:myproject/screens/timedate.dart';
- 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -39,11 +39,10 @@ class MyApp extends StatelessWidget {
         '/auth': (context) => const AuthScreen(),
         '/menu': (context) => const Menu(),
         '/timedate': (context) => const Timedate(),
-        '/profilepage' : (context) => const ProfilePage(),
+        '/profilepage': (context) => const ProfilePage(),
         '/edit_profile': (context) => const EditProfile(),
         '/bookinghistory': (context) => const BookingHistory(),
         '/section': (context) => const Section(),
-        
       },
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
           }
 
           if (snapshot.hasData && snapshot.data != null) {
-            return const Menu(); // แสดงหน้า Coco เมื่อเข้าสู่ระบบสำเร็จ
+            return const Menu(); // แสดงหน้า Menu เมื่อเข้าสู่ระบบสำเร็จ
           }
 
           return const AuthScreen();

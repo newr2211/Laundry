@@ -12,7 +12,7 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 0; // ตัวแปรสำหรับเก็บสถานะการเลือกแท็บ
-  final String _bookingQueue = "ไม่มีการจองในขณะนี้"; // ช่องแสดงคิวการจอง
+  String _bookingQueue = "ไม่มีการจองในขณะนี้"; // ช่องแสดงคิวการจอง
 
   // ฟังก์ชันสำหรับเปลี่ยนแท็บ
   void _onItemTapped(int index) {
@@ -34,25 +34,54 @@ class _MenuState extends State<Menu> {
 
   // ฟังก์ชันสำหรับแสดงหน้าป็อบอัพ
   void _showBookingDialog() {
-    // นำทางไปยังหน้า Section เมื่อกดปุ่ม "เพิ่มการจอง"
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const Section()),
+    ).then((result) {
+      if (result != null && result is String) {
+        setState(() {
+          _bookingQueue = result; // อัปเดตคิวการจองหลังจากกลับจากหน้า Section
+        });
+      }
+    });
+  }
+
+  // ฟังก์ชันสำหรับยืนยันการล็อกเอาต์
+  Future<void> _confirmSignOut() async {
+    final shouldSignOut = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('ยืนยันการออกจากระบบ'),
+        content: const Text('คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('ยกเลิก'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('ออกจากระบบ'),
+          ),
+        ],
+      ),
     );
+
+    if (shouldSignOut == true) {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, '/auth'); // กลับไปหน้า AuthScreen
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Laund'),
+        title: const Text('Laundry'),
         backgroundColor: const Color.fromARGB(255, 169, 211, 122),
         automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
+            onPressed: _confirmSignOut, // ยืนยันการออกจากระบบ
           ),
         ],
       ),
