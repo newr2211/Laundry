@@ -34,9 +34,11 @@ class _MenuState extends State<Menu> {
 
   // ฟังก์ชันสำหรับแสดงหน้าป็อบอัพ
   void _showBookingDialog() {
-    Navigator.of(context).push(
+    Navigator.of(context)
+        .push(
       MaterialPageRoute(builder: (context) => const Section()),
-    ).then((result) {
+    )
+        .then((result) {
       if (result != null && result is String) {
         setState(() {
           _bookingQueue = result; // อัปเดตคิวการจองหลังจากกลับจากหน้า Section
@@ -47,28 +49,31 @@ class _MenuState extends State<Menu> {
 
   // ฟังก์ชันสำหรับยืนยันการล็อกเอาต์
   Future<void> _confirmSignOut() async {
-    final shouldSignOut = await showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('ยืนยันการออกจากระบบ'),
         content: const Text('คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
+            onPressed: () => Navigator.of(context).pop(),
             child: const Text('ยกเลิก'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil('/auth', (Route<dynamic> route) => false);
+            },
             child: const Text('ออกจากระบบ'),
           ),
         ],
       ),
     );
 
-    if (shouldSignOut == true) {
-      await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, '/auth'); // กลับไปหน้า AuthScreen
-    }
+    // if (shouldSignOut == true) {
+    //   await FirebaseAuth.instance.signOut();
+    //   Navigator.pushReplacementNamed(context, '/auth'); // กลับไปหน้า AuthScreen
+    // }
   }
 
   @override
@@ -95,7 +100,8 @@ class _MenuState extends State<Menu> {
             ),
             const SizedBox(height: 20), // ระยะห่างระหว่างข้อความกับปุ่ม
             ElevatedButton(
-              onPressed: _showBookingDialog, // เมื่อกดปุ่มจะนำทางไปยังหน้า Section
+              onPressed: _showBookingDialog,
+              // เมื่อกดปุ่มจะนำทางไปยังหน้า Section
               child: const Text('เพิ่มการจอง'),
             ),
           ],
@@ -117,8 +123,10 @@ class _MenuState extends State<Menu> {
             label: 'ประวัติการจองคิว',
           ),
         ],
-        currentIndex: _selectedIndex, // แท็บที่ถูกเลือก
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112), // สีของแท็บที่ถูกเลือก
+        currentIndex: _selectedIndex,
+        // แท็บที่ถูกเลือก
+        selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
+        // สีของแท็บที่ถูกเลือก
         onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
       ),
     );
