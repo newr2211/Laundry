@@ -6,7 +6,6 @@ class Menu extends StatefulWidget {
   const Menu({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MenuState createState() => _MenuState();
 }
 
@@ -69,11 +68,6 @@ class _MenuState extends State<Menu> {
         ],
       ),
     );
-
-    // if (shouldSignOut == true) {
-    //   await FirebaseAuth.instance.signOut();
-    //   Navigator.pushReplacementNamed(context, '/auth'); // กลับไปหน้า AuthScreen
-    // }
   }
 
   @override
@@ -85,15 +79,31 @@ class _MenuState extends State<Menu> {
         automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout_sharp),
             onPressed: _confirmSignOut, // ยืนยันการออกจากระบบ
           ),
         ],
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start, // เริ่มจากด้านบน
           children: [
+            const SizedBox(height: 40), // ระยะห่างจากด้านบน
+            // กล่องแสดงคิวที่มีกรอบดำ
+            Container(
+              width: 250,
+              height: 120,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // สีกรอบสีดำ
+                  width: 2.0,
+                ),
+              ),
+              child: const Center(
+                child: Text('กล่องแสดงคิว', style: TextStyle(fontSize: 24)),
+              ),
+            ),
+            const SizedBox(height: 20), // ระยะห่างระหว่างกล่องกับข้อความ
             Text(
               _bookingQueue,
               style: const TextStyle(fontSize: 24), // ขนาดข้อความ
@@ -101,7 +111,6 @@ class _MenuState extends State<Menu> {
             const SizedBox(height: 20), // ระยะห่างระหว่างข้อความกับปุ่ม
             ElevatedButton(
               onPressed: _showBookingDialog,
-              // เมื่อกดปุ่มจะนำทางไปยังหน้า Section
               child: const Text('เพิ่มการจอง'),
             ),
           ],
@@ -124,9 +133,7 @@ class _MenuState extends State<Menu> {
           ),
         ],
         currentIndex: _selectedIndex,
-        // แท็บที่ถูกเลือก
         selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
-        // สีของแท็บที่ถูกเลือก
         onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
       ),
     );

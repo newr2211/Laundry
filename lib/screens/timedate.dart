@@ -12,7 +12,10 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
   late AnimationController _controller;
   late TextEditingController _dateController;
   late TextEditingController _timeController;
-  int _selectedIndex = 0; // เริ่มต้นแท็บที่ 0
+  int _selectedIndex = 0;
+
+  // เก็บบันทึกจำนวนการจองในแต่ละวันและเวลา
+  Map<String, Map<String, int>> bookingCount = {};
 
   @override
   void initState() {
@@ -61,7 +64,7 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: const Text('เลือกเวลาการจองคิวใช้บริการ'),
         backgroundColor: const Color.fromARGB(255, 169, 211, 122),
-        automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Padding(
@@ -105,11 +108,11 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
               ),
               const SizedBox(height: 30),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround, // จัดเรียงปุ่มให้ห่างกัน
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // ย้อนกลับไปหน้าก่อนหน้า
+                      Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
@@ -156,17 +159,13 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
 
     if (picked != null) {
-      // ตรวจสอบว่าตรงกับวันเสาร์หรืออาทิตย์หรือไม่
       if (picked.weekday == DateTime.saturday || picked.weekday == DateTime.sunday) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ไม่สามารถจองคิวในวันเสาร์หรืออาทิตย์ได้')),
-        );
+        _showPopupMessage('ไม่สามารถจองคิวในวันเสาร์หรืออาทิตย์ได้');
       } else {
         setState(() {
           _dateController.text = picked.toString().split(" ")[0];
@@ -182,12 +181,8 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
     );
 
     if (picked != null) {
-      // ตรวจสอบว่าตรงกับช่วงเวลาที่ไม่สามารถจองได้ (18:00 ถึง 08:00)
       if (picked.hour >= 18 || picked.hour < 8) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ไม่สามารถจองคิวในช่วง 18:00 ถึง 08:00 ได้')),
-        );
+        _showPopupMessage('ไม่สามารถจองคิวในช่วง 18:00 ถึง 08:00 ได้');
       } else {
         String formattedTime = '${picked.hour}:${picked.minute.toString().padLeft(2, '0')}';
         setState(() {
@@ -202,36 +197,65 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
     String selectedTime = _timeController.text;
 
     if (selectedDate.isEmpty || selectedTime.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาเลือกวันและเวลาสำหรับการจอง')),
-      );
+      _showPopupMessage('กรุณาเลือกวันและเวลาสำหรับการจอง');
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('ยืนยันการจอง'),
-            content: Text('คุณต้องการจองวันที่ $selectedDate เวลา $selectedTime หรือไม่?'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('ยกเลิก'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('ยืนยัน'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('จองวันที่ $selectedDate เวลา $selectedTime สำเร็จ')),
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (bookingCount[selectedDate] == null) {
+        bookingCount[selectedDate] = {};
+      }
+
+      if (bookingCount[selectedDate]![selectedTime] == null) {
+        bookingCount[selectedDate]![selectedTime] = 0;
+      }
+
+      if (bookingCount[selectedDate]![selectedTime]! >= 3) {
+        _showPopupMessage('เวลานี้ถูกจองครบ 3 ครั้งแล้ว');
+      } else {
+        bookingCount[selectedDate]![selectedTime] = bookingCount[selectedDate]![selectedTime]! + 1;
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('ยืนยันการจอง'),
+              content: Text('คุณต้องการจองวันที่ $selectedDate เวลา $selectedTime หรือไม่?'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('ยกเลิก'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('ยืนยัน'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _showPopupMessage('จองวันที่ $selectedDate เวลา $selectedTime สำเร็จ');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
+  }
+
+  // ฟังก์ชันสำหรับแสดงป๊อบอัพ
+  void _showPopupMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ตกลง'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
