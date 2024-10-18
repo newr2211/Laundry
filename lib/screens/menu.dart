@@ -19,10 +19,16 @@ class _MenuState extends State<Menu> {
     });
 
     switch (index) {
+      case 0:
+        // กรณีหน้าหลัก
+        break;
       case 1:
         Navigator.of(context).pushNamed('/profilepage');
         break;
       case 2:
+        Navigator.of(context).pushNamed('/queuenotification');
+        break;
+      case 3:
         Navigator.of(context).pushNamed('/bookinghistory');
         break;
     }
@@ -57,12 +63,32 @@ class _MenuState extends State<Menu> {
     );
   }
 
+  void _showNotificationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('แจ้งเตือนคิว'),
+          content: const Text('นี่คือแจ้งเตือนเกี่ยวกับคิวของคุณ'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('ปิด'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Laundry'),
-        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        backgroundColor: const Color.fromARGB(255, 94, 201, 112),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -88,7 +114,7 @@ class _MenuState extends State<Menu> {
               child: Text('กล่องแสดงคิว', style: TextStyle(fontSize: 24)),
             ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 40),
           Expanded(
             child: Column(
               children: [
@@ -99,7 +125,7 @@ class _MenuState extends State<Menu> {
                     _buildImageBox('assets/images/image2.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -107,7 +133,7 @@ class _MenuState extends State<Menu> {
                     _buildImageBox('assets/images/image4.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 _buildImageBox('assets/images/image5.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
               ],
             ),

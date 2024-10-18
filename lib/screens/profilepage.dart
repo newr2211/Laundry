@@ -28,6 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
       case 1:
         break;
       case 2:
+        Navigator.of(context).pushReplacementNamed('/queuenotification');
+        break;
+      case 3:
         Navigator.of(context).pushReplacementNamed('/bookinghistory');
         break;
     }
@@ -38,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Laundry'),
-        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        backgroundColor: const Color.fromARGB(255, 94, 201, 112),
         automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: Center(

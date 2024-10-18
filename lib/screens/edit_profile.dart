@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('แก้ไขโปรไฟล์'),
-        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        backgroundColor: const Color.fromARGB(255, 94, 201, 112),
         automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
       ),
       body: Padding(
@@ -170,6 +170,9 @@ class _EditProfileState extends State<EditProfile> {
         Navigator.of(context).pushReplacementNamed('/profilepage'); // โปรไฟล์
         break;
       case 2:
+        Navigator.of(context).pushNamed('/queuenotification');
+        break;
+      case 3:
         Navigator.of(context).pushReplacementNamed('/bookinghistory'); // ประวัติการจองคิว
         break;
     }

@@ -24,6 +24,10 @@ class CustomBottomNavBar extends StatelessWidget {
           label: 'โปรไฟล์',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.notifications),
+          label: 'แจ้งเตือนคิว',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.queue),
           label: 'ประวัติการจองคิว',
         ),

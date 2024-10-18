@@ -6,6 +6,7 @@ import 'package:myproject/screens/bookinghistory.dart';
 import 'package:myproject/screens/menu.dart';
 import 'package:myproject/screens/edit_profile.dart';
 import 'package:myproject/screens/profilepage.dart';
+import 'package:myproject/screens/queuenotification.dart';
 import 'package:myproject/screens/section.dart';
 import 'package:myproject/screens/splash.dart';
 import 'package:myproject/screens/auth.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/edit_profile': (context) => const EditProfile(),
         '/bookinghistory': (context) => const BookingHistory(),
         '/section': (context) => const Section(),
+        '/queuenotification': (context) => const QueueNotificationPage(),
       },
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),

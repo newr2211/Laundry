@@ -27,8 +27,7 @@ class _BookingHistoryState extends State<BookingHistory> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ประวัติการจองคิว'),
-        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
-        automaticallyImplyLeading: false, // ปิดปุ่มย้อนกลับ
+        backgroundColor: const Color.fromARGB(255, 94, 201, 112),
       ),
       body: ListView.builder(
         itemCount: bookings.length,
@@ -63,6 +62,9 @@ class _BookingHistoryState extends State<BookingHistory> {
         Navigator.of(context).pushReplacementNamed('/profilepage'); // โปรไฟล์
         break;
       case 2:
+        Navigator.of(context).pushNamed('/queuenotification');
+        break;
+      case 3:
         // หน้าประวัติการจองคิว (ไม่ต้องทำอะไรเพราะเป็นหน้าปัจจุบัน)
         break;
     }

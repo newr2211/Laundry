@@ -49,9 +49,12 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
         Navigator.of(context).pushNamed('/profilepage');
         break;
       case 2:
-        Navigator.of(context).pushNamed('/bookinghistory');
+        Navigator.of(context).pushNamed('/queuenotification');
         break;
       case 3:
+        Navigator.of(context).pushNamed('/bookinghistory');
+        break;
+      case 4:
         FirebaseAuth.instance.signOut();
         Navigator.of(context).pushReplacementNamed('/auth');
         break;
@@ -63,7 +66,7 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('เลือกเวลาการจองคิวใช้บริการ'),
-        backgroundColor: const Color.fromARGB(255, 169, 211, 122),
+        backgroundColor: const Color.fromARGB(255, 94, 201, 112),
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -192,7 +195,7 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
       }
 
       if (bookingCount[selectedDate]![selectedTime]! >= 3) {
-        _showPopupMessage('เวลานี้ถูกจองครบ 3 ครั้งแล้ว');
+        _showPopupMessage('เวลานี้ถูกจองคิวเต็มแล้ว');
       } else {
         bookingCount[selectedDate]![selectedTime] = bookingCount[selectedDate]![selectedTime]! + 1;
         showDialog(
