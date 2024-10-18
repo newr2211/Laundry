@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // นำเข้า CustomBottomNavBar
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -23,12 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
     switch (index) {
       case 0:
-        Navigator.of(context).pushNamed('/menu');
+        Navigator.of(context).pushReplacementNamed('/menu');
         break;
       case 1:
         break;
       case 2:
-        Navigator.of(context).pushNamed('/bookinghistory');
+        Navigator.of(context).pushReplacementNamed('/bookinghistory');
         break;
     }
   }
@@ -87,25 +87,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
-        onTap: _onItemTapped,
+      bottomNavigationBar: CustomBottomNavBar( // ใช้ CustomBottomNavBar แทน
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

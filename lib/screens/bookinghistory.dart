@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // นำเข้า CustomBottomNavBar
 
 class BookingHistory extends StatefulWidget {
   const BookingHistory({super.key});
@@ -11,23 +12,6 @@ class BookingHistory extends StatefulWidget {
 
 class _BookingHistoryState extends State<BookingHistory> {
   int _selectedIndex = 2; // ตั้งค่าแท็บที่เลือกเริ่มต้นเป็นหน้าประวัติการจองคิว
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.of(context).pushNamed('/menu');
-        break;
-      case 1:
-        Navigator.of(context).pushNamed('/profilepage');
-        break;
-      case 2:
-        break;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +43,28 @@ class _BookingHistoryState extends State<BookingHistory> {
           );
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
-          ),
-        ],
-        currentIndex: _selectedIndex, // แท็บที่ถูกเลือก
-        selectedItemColor:
-            const Color.fromARGB(255, 94, 201, 112), // สีของแท็บที่ถูกเลือก
-        onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
+      bottomNavigationBar: CustomBottomNavBar( // ใช้ CustomBottomNavBar แทน BottomNavigationBar
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushReplacementNamed('/menu'); // หน้าหลัก
+        break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed('/profilepage'); // โปรไฟล์
+        break;
+      case 2:
+        // หน้าประวัติการจองคิว (ไม่ต้องทำอะไรเพราะเป็นหน้าปัจจุบัน)
+        break;
+    }
   }
 }

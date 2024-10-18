@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // นำเข้า CustomBottomNavBar
 
 class Timedate extends StatefulWidget {
   const Timedate({super.key});
@@ -14,7 +15,6 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
   late TextEditingController _timeController;
   int _selectedIndex = 0;
 
-  // เก็บบันทึกจำนวนการจองในแต่ละวันและเวลา
   Map<String, Map<String, int>> bookingCount = {};
 
   @override
@@ -43,16 +43,16 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
 
     switch (index) {
       case 0:
-        Navigator.of(context).pushNamed('/menu'); // หน้าหลัก
+        Navigator.of(context).pushNamed('/menu');
         break;
       case 1:
-        Navigator.of(context).pushNamed('/profilepage'); // โปรไฟล์
+        Navigator.of(context).pushNamed('/profilepage');
         break;
       case 2:
-        Navigator.of(context).pushNamed('/bookinghistory'); // ประวัติการจองคิว
+        Navigator.of(context).pushNamed('/bookinghistory');
         break;
       case 3:
-        FirebaseAuth.instance.signOut(); // ออกจากระบบ
+        FirebaseAuth.instance.signOut();
         Navigator.of(context).pushReplacementNamed('/auth');
         break;
     }
@@ -132,25 +132,9 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
-        onTap: _onItemTapped,
+      bottomNavigationBar: CustomBottomNavBar( // ใช้ CustomBottomNavBar แทน
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -239,7 +223,6 @@ class _TimedateState extends State<Timedate> with SingleTickerProviderStateMixin
     }
   }
 
-  // ฟังก์ชันสำหรับแสดงป๊อบอัพ
   void _showPopupMessage(String message) {
     showDialog(
       context: context,

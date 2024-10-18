@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // นำเข้า CustomBottomNavBar
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -15,24 +16,6 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _phoneController = TextEditingController();
 
   int _selectedIndex = 1; // ตั้งค่าแท็บเริ่มต้นเป็นหน้าการแก้ไขโปรไฟล์
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.of(context).pushNamed('/menu'); // หน้าหลัก
-        break;
-      case 1:
-        Navigator.of(context).pushNamed('/profilepage'); // แก้ไขโปรไฟล์
-        break;
-      case 2:
-        Navigator.of(context).pushNamed('/bookinghistory'); // ประวัติการจองคิว
-        break;
-    }
-  }
 
   @override
   void initState() {
@@ -62,9 +45,7 @@ class _EditProfileState extends State<EditProfile> {
         // ดึงข้อมูลผู้ใช้ใหม่
         user = FirebaseAuth.instance.currentUser;
       } catch (error) {
-        // จัดการข้อผิดพลาดที่เกิดขึ้น
         print('Error updating profile: $error');
-        // แสดงข้อความแสดงข้อผิดพลาด (เช่น ใน SnackBar)
       }
     }
   }
@@ -169,26 +150,28 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
-          ),
-        ],
-        currentIndex: _selectedIndex, // แท็บที่ถูกเลือก
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112), // สีของแท็บที่ถูกเลือก
-        onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
+      bottomNavigationBar: CustomBottomNavBar( // ใช้ CustomBottomNavBar แทน BottomNavigationBar
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushReplacementNamed('/menu'); // หน้าหลัก
+        break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed('/profilepage'); // โปรไฟล์
+        break;
+      case 2:
+        Navigator.of(context).pushReplacementNamed('/bookinghistory'); // ประวัติการจองคิว
+        break;
+    }
   }
 }

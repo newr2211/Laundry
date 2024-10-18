@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/screens/timedate.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // นำเข้า CustomBottomNavBar
 
 class Section extends StatefulWidget {
   const Section({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MenuState createState() => _MenuState();
 }
 
@@ -28,12 +28,10 @@ class _MenuState extends State<Section> {
         Navigator.of(context).pushReplacementNamed('/menu'); // หน้าหลัก
         break;
       case 1:
-        // หน้าโปรไฟล์
-        Navigator.of(context).pushReplacementNamed('/profilepage');
+        Navigator.of(context).pushReplacementNamed('/profilepage'); // หน้าโปรไฟล์
         break;
       case 2:
-        // หน้าประวัติการจองคิว
-        Navigator.of(context).pushReplacementNamed('/bookinghistory');
+        Navigator.of(context).pushReplacementNamed('/bookinghistory'); // หน้าประวัติการจองคิว
         break;
     }
   }
@@ -145,27 +143,10 @@ class _MenuState extends State<Section> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
-        onTap: _onItemTapped,
+      bottomNavigationBar: CustomBottomNavBar( // ใช้ CustomBottomNavBar แทน
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
 }
-

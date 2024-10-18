@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myproject/screens/section.dart'; // เพิ่มการนำเข้าหน้า Section
+import 'package:myproject/screens/section.dart';
+import 'package:myproject/widgets/custom_bottom_navbar.dart'; // เพิ่มการนำเข้าจากไฟล์ที่สร้างใหม่
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -10,10 +11,8 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  int _selectedIndex = 0; // ตัวแปรสำหรับเก็บสถานะการเลือกแท็บ
-  String _bookingQueue = "ไม่มีการจองในขณะนี้"; // ช่องแสดงคิวการจอง
+  int _selectedIndex = 0;
 
-  // ฟังก์ชันสำหรับเปลี่ยนแท็บ
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -21,32 +20,20 @@ class _MenuState extends State<Menu> {
 
     switch (index) {
       case 1:
-        // หน้าแก้ไขโปรไฟล์
         Navigator.of(context).pushNamed('/profilepage');
         break;
       case 2:
-        // หน้าประวัติการจองคิว
         Navigator.of(context).pushNamed('/bookinghistory');
         break;
     }
   }
 
-  // ฟังก์ชันสำหรับแสดงหน้าป็อบอัพ
   void _showBookingDialog() {
-    Navigator.of(context)
-        .push(
+    Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const Section()),
-    )
-        .then((result) {
-      if (result != null && result is String) {
-        setState(() {
-          _bookingQueue = result; // อัปเดตคิวการจองหลังจากกลับจากหน้า Section
-        });
-      }
-    });
+    );
   }
 
-  // ฟังก์ชันสำหรับยืนยันการล็อกเอาต์
   Future<void> _confirmSignOut() async {
     await showDialog<bool>(
       context: context,
@@ -76,66 +63,84 @@ class _MenuState extends State<Menu> {
       appBar: AppBar(
         title: const Text('Laundry'),
         backgroundColor: const Color.fromARGB(255, 169, 211, 122),
-        automaticallyImplyLeading: false, // ซ่อนปุ่มย้อนกลับ
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_sharp),
-            onPressed: _confirmSignOut, // ยืนยันการออกจากระบบ
+            onPressed: _confirmSignOut,
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, // เริ่มจากด้านบน
-          children: [
-            const SizedBox(height: 40), // ระยะห่างจากด้านบน
-            // กล่องแสดงคิวที่มีกรอบดำ
-            Container(
-              width: 250,
-              height: 120,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black, // สีกรอบสีดำ
-                  width: 2.0,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          Container(
+            width: 250,
+            height: 120,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+                width: 2.0,
+              ),
+            ),
+            child: const Center(
+              child: Text('กล่องแสดงคิว', style: TextStyle(fontSize: 24)),
+            ),
+          ),
+          const SizedBox(height: 60),
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildImageBox('assets/images/1.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
+                    _buildImageBox('assets/images/image2.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
+                  ],
                 ),
-              ),
-              child: const Center(
-                child: Text('กล่องแสดงคิว', style: TextStyle(fontSize: 24)),
-              ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildImageBox('assets/images/image3.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
+                    _buildImageBox('assets/images/image4.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
+                  ],
+                ),
+                const SizedBox(height: 20),
+                _buildImageBox('assets/images/image5.png'), // เปลี่ยนเป็นพาธรูปภาพของคุณ
+              ],
             ),
-            const SizedBox(height: 20), // ระยะห่างระหว่างกล่องกับข้อความ
-            Text(
-              _bookingQueue,
-              style: const TextStyle(fontSize: 24), // ขนาดข้อความ
-            ),
-            const SizedBox(height: 20), // ระยะห่างระหว่างข้อความกับปุ่ม
-            ElevatedButton(
+          ),
+          // ย้ายปุ่มลงมาด้านล่าง
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: ElevatedButton(
               onPressed: _showBookingDialog,
               child: const Text('เพิ่มการจอง'),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'โปรไฟล์',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.queue),
-            label: 'ประวัติการจองคิว',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 94, 201, 112),
-        onTap: _onItemTapped, // ฟังก์ชันเมื่อเลือกแท็บ
       ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
+    );
+  }
+
+  // ฟังก์ชันสำหรับสร้างกล่องรูปภาพ
+  Widget _buildImageBox(String imagePath) {
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 2.0),
+      ),
+      child: Image.asset(
+        imagePath,
+        fit: BoxFit.cover,
+      ), // ใช้ Image.asset เพื่อแสดงรูปภาพจาก assets
     );
   }
 }
